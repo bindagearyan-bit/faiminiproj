@@ -1,0 +1,31 @@
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Raw dataset (do not commit raw data automatically)
+data/raw/
+data/
+*.csv
+
+# Trained model artifacts
+models/*.joblib
+models/*.pkl
+
+# Generated outputs
+outputs/figures/*.png
+outputs/metrics/*.csv
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
