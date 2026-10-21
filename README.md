@@ -86,6 +86,31 @@ python src/train_model.py
 - Selects the winning pipeline, trains it on all training data, and evaluates it once on the test set.
 - Exports confusion matrix graphic, metrics CSVs, and the fitted pipeline artifact.
 
+### Step 4: Classify Any Custom Values (Live Inference)
+```bash
+# Option A: Interactive step-by-step terminal prompt (guides you through all 13 features)
+python src/predict.py
+
+# Option B: Pass custom patient features directly via CLI flags
+python src/predict.py --age 58 --sex 1 --cp 4 --trestbps 140 --chol 260 --fbs 0 --restecg 1 --thalach 130 --exang 1 --oldpeak 2.2 --slope 2 --ca 1 --thal 7
+
+# Option C: Run instant demonstration on preconfigured profiles (High, Low, and Moderate Risk)
+python src/predict.py --demo
+
+# Option D: Classify via JSON file or JSON string
+python src/predict.py --json '{"age": 45, "sex": 0, "cp": 2, "trestbps": 120, "chol": 210, "thalach": 165, "oldpeak": 0.4, "slope": 1, "ca": 0, "thal": 3}'
+
+# Option E: Batch classify a full CSV file
+python src/predict.py --csv path/to/patients.csv
+```
+- Accepts **any arbitrary patient values** provided by the user (not limited to training or historical data).
+- Applies identical preprocessing automatically (median imputation, standardization, one-hot encoding).
+- Outputs the classification:
+  * **Class 0 (Negative / No Heart Disease)** or **Class 1 (Positive / Heart Disease Detected)**
+  * **Precise Probabilities & Confidence** (e.g. `98.71%` Disease, `1.29%` Absence)
+  * **Assessed Risk Tier** (Low Risk, Moderate Risk, High Risk)
+  * **Key Clinical Risk Factor Breakdown** (e.g. ST depression, asymptomatic angina, fluoroscopy vessels, thallium defect)
+
 ---
 
 ## Verified Experimental Results
@@ -118,7 +143,7 @@ The winning **Logistic Regression Pipeline** achieved the following on the untou
 
 ```text
 heart-disease-classifier/
-├── .gitignore                          # Ignores venv, bytecode, raw data, outputs
+├── .gitignore                          # Ignores venv, bytecode, raw data, outputs (tracks model artifact)
 ├── requirements.txt                    # Project dependencies
 ├── README.md                           # Project overview, citation, commands, results
 ├── learning_walkthrough.md             # In-depth beginner ML concepts & tutorial
@@ -140,7 +165,8 @@ heart-disease-classifier/
 └── src/
     ├── download_data.py                # Dataset acquisition and preprocessing
     ├── eda.py                          # Exploratory data analysis and charting
-    └── train_model.py                  # Training, cross-validation, and evaluation
+    ├── train_model.py                  # Training, cross-validation, and evaluation
+    └── predict.py                      # Interactive & CLI inference on custom patient values
 ```
 
 ---

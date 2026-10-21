@@ -209,3 +209,25 @@ python src/train_model.py
    - `outputs/figures/confusion_matrix.png` (visual confusion matrix)
    - `outputs/metrics/model_evaluation_metrics.csv` (test metrics table)
    - `outputs/metrics/cv_model_comparison.csv` (CV comparison table)
+
+---
+
+### Step 5: Classify Any Arbitrary Custom Patient Values
+```bash
+# Interactive mode (step-by-step guidance through 13 clinical variables)
+python src/predict.py
+
+# Direct command-line input
+python src/predict.py --age 62 --sex 1 --cp 4 --trestbps 150 --chol 270 --thalach 125 --exang 1 --oldpeak 2.0 --slope 2 --ca 1 --thal 7
+
+# Demonstration mode with preset profiles
+python src/predict.py --demo
+```
+*Purpose*:
+Demonstrates the real-world deployment phase of machine learning: **inference on unseen, custom data**.
+1. Loads the serialized scikit-learn `Pipeline` (`models/heart_disease_pipeline.joblib`).
+2. Seamlessly passes the new patient's raw features through the fitted `ColumnTransformer` (which applies the training set's learned medians for imputation, standardizes numeric features, and one-hot encodes categorical features).
+3. Evaluates the classifier's learned decision boundary:
+   $$z = w_0 + \sum_{i=1}^D w_i x_i, \quad P(y=1) = \frac{1}{1 + e^{-z}}$$
+4. Outputs the final binary classification ($0$ vs $1$), calibrated probabilities ($P(\text{Disease})$ and $P(\text{No Disease})$), risk tier (Low, Moderate, High), and an automatic clinical risk factor analysis based on key indicators.
+

@@ -19,6 +19,7 @@ data/
 # Trained model artifacts
 models/*.joblib
 models/*.pkl
+!models/heart_disease_pipeline.joblib
 
 # Generated outputs
 outputs/figures/*.png
