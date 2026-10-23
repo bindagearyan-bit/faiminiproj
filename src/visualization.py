@@ -1,10 +1,11 @@
 """
 visualization.py
 
-Generates authentic, standard Google Colab / Jupyter Notebook style charts
-using matplotlib, seaborn, and scikit-learn.
-Designed specifically for college academic viva / faculty demonstrations:
-clean, realistic, simple to understand, with no artificial or confusing elements.
+Generates authentic, high-impact clinical data visualizations using
+matplotlib, seaborn, and scikit-learn.
+Engineered for academic viva examinations & real clinical dashboard demonstrations:
+crystal-clear dark-mode aesthetic, authentic statistical distributions,
+and zero artificial or confusing clutter.
 """
 
 from __future__ import annotations
@@ -35,26 +36,26 @@ def get_dataset() -> Optional[pd.DataFrame]:
 
 
 def fig_to_base64(fig: plt.Figure) -> str:
-    """Converts a matplotlib figure into base64 string, exactly as displayed in a Colab notebook cell."""
+    """Converts a matplotlib figure into base64 string with crisp dark-mode rendering."""
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=130, bbox_inches="tight", facecolor="#ffffff", edgecolor="#cccccc")
+    fig.savefig(buf, format="png", dpi=140, bbox_inches="tight", facecolor="#0e172a", edgecolor="#1e293b")
     plt.close(fig)
     buf.seek(0)
     return base64.b64encode(buf.getvalue()).decode("utf-8")
 
 
 def set_colab_theme(ax: plt.Axes, fig: plt.Figure):
-    """Configures clean, authentic Google Colab / Jupyter notebook styling."""
-    fig.patch.set_facecolor("#ffffff")
-    ax.set_facecolor("#fafafa")
-    ax.tick_params(colors="#1f2937", labelsize=9.5)
+    """Configures clean, authentic JupyterLab / Colab Dark Mode styling."""
+    fig.patch.set_facecolor("#0e172a")
+    ax.set_facecolor("#111c35")
+    ax.tick_params(colors="#cbd5e1", labelsize=9.5)
     for spine in ax.spines.values():
-        spine.set_color("#9ca3af")
-        spine.set_linewidth(0.9)
-    ax.xaxis.label.set_color("#111827")
-    ax.yaxis.label.set_color("#111827")
-    ax.title.set_color("#111827")
-    ax.grid(True, linestyle="--", alpha=0.4, color="#cbd5e1")
+        spine.set_color("#334155")
+        spine.set_linewidth(1.0)
+    ax.xaxis.label.set_color("#f1f5f9")
+    ax.yaxis.label.set_color("#f1f5f9")
+    ax.title.set_color("#f8fafc")
+    ax.grid(True, linestyle="--", alpha=0.35, color="#1e293b")
 
 
 def generate_biomarker_heatmap(patient_dict: Dict[str, Any]) -> Dict[str, Any]:
@@ -97,25 +98,25 @@ def generate_biomarker_heatmap(patient_dict: Dict[str, Any]) -> Dict[str, Any]:
     ])
 
     fig, ax = plt.subplots(figsize=(8.0, 3.8))
-    fig.patch.set_facecolor("#ffffff")
-    ax.set_facecolor("#ffffff")
+    fig.patch.set_facecolor("#0e172a")
+    ax.set_facecolor("#0e172a")
 
     sns.heatmap(
         matrix[:2],
         annot=annot[:2],
         fmt="",
-        cmap="YlOrRd",
-        linewidths=1.2,
-        linecolor="#e5e7eb",
+        cmap="rocket_r",
+        linewidths=2.0,
+        linecolor="#0e172a",
         cbar=False,
         xticklabels=col_names,
         yticklabels=["Your Patient Value", "Healthy Benchmark"],
-        annot_kws={"size": 11, "weight": "bold", "color": "#111827"},
+        annot_kws={"size": 11, "weight": "bold", "color": "#f8fafc"},
         ax=ax,
     )
 
-    ax.set_title("Seaborn Heatmap: Patient Health Values vs. Healthy Baseline", fontsize=11.5, fontweight="bold", pad=12, color="#111827")
-    ax.tick_params(colors="#1f2937", labelsize=9.5)
+    ax.set_title("Seaborn Heatmap: Patient Health Values vs. Healthy Baseline", fontsize=11.5, fontweight="bold", pad=12, color="#f8fafc")
+    ax.tick_params(colors="#cbd5e1", labelsize=9.5)
 
     base64_str = fig_to_base64(fig)
     return {
@@ -129,7 +130,7 @@ def generate_biomarker_heatmap(patient_dict: Dict[str, Any]) -> Dict[str, Any]:
 
 def generate_feature_impact_plot(pipeline, patient_dict: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Renders a standard Colab horizontal bar chart showing which inputs
+    Renders a standard horizontal bar chart showing which inputs
     pushed the model toward Heart Disease (Red) vs Healthy (Green).
     """
     from src.predict import FEATURE_NAMES
@@ -189,13 +190,13 @@ def generate_feature_impact_plot(pipeline, patient_dict: Dict[str, Any]) -> Dict
 
     names = [r[0] for r in top_records]
     vals = [r[1] for r in top_records]
-    colors = ["#dc2626" if v > 0 else "#16a34a" for v in vals]
+    colors = ["#f43f5e" if v > 0 else "#10b981" for v in vals]
 
     fig, ax = plt.subplots(figsize=(8.0, 4.4))
     set_colab_theme(ax, fig)
 
-    bars = ax.barh(names, vals, color=colors, height=0.55, edgecolor="#4b5563", linewidth=0.7)
-    ax.axvline(0, color="#111827", linestyle="-", linewidth=1.1)
+    bars = ax.barh(names, vals, color=colors, height=0.55, edgecolor="#1e293b", linewidth=0.7)
+    ax.axvline(0, color="#f8fafc", linestyle="-", linewidth=1.1)
 
     for bar, val in zip(bars, vals):
         offset = 0.04 if val >= 0 else -0.04
@@ -207,13 +208,13 @@ def generate_feature_impact_plot(pipeline, patient_dict: Dict[str, Any]) -> Dict
             f"{sign}{val:.2f}",
             va="center",
             ha=ha,
-            color="#111827",
+            color="#f8fafc",
             fontsize=9.5,
             fontweight="bold",
         )
 
-    ax.set_title("Scikit-Learn Model: What Pushed the Prediction? (Feature Weights)", fontsize=11.5, fontweight="bold", pad=12)
-    ax.set_xlabel("Impact on Model Prediction (Red = Increases Disease Risk | Green = Healthy Indicator)", fontsize=9.5, labelpad=6)
+    ax.set_title("Scikit-Learn Model: What Pushed the Prediction? (Feature Weights)", fontsize=11.5, fontweight="bold", pad=12, color="#f8fafc")
+    ax.set_xlabel("Impact on Model Prediction (Red = Disease Risk | Green = Healthy Indicator)", fontsize=9.5, labelpad=6, color="#cbd5e1")
 
     max_abs = max([abs(v) for v in vals] + [0.8])
     ax.set_xlim(-max_abs * 1.35, max_abs * 1.35)
@@ -247,10 +248,10 @@ def generate_age_thalach_kde_plot(patient_dict: Dict[str, Any]) -> Dict[str, Any
             x="age",
             y="thalach",
             hue="target",
-            palette={0: "#0284c7", 1: "#ef4444"},
-            alpha=0.6,
-            s=45,
-            edgecolor="#ffffff",
+            palette={0: "#38bdf8", 1: "#f43f5e"},
+            alpha=0.65,
+            s=48,
+            edgecolor="#0e172a",
             linewidth=0.5,
             ax=ax,
         )
@@ -259,18 +260,18 @@ def generate_age_thalach_kde_plot(patient_dict: Dict[str, Any]) -> Dict[str, Any
     ax.scatter(
         [age],
         [thalach],
-        color="#f59e0b",
-        s=200,
+        color="#fbbf24",
+        s=220,
         marker="*",
-        edgecolor="#111827",
+        edgecolor="#ffffff",
         linewidth=1.2,
         zorder=10,
         label=f"Your Patient (Age {age:.0f}, Heart Rate {thalach:.0f})",
     )
 
-    ax.set_title("Seaborn Scatter: Where Does Your Patient Fall in the Dataset?", fontsize=11.5, fontweight="bold", pad=12)
-    ax.set_xlabel("Patient Age (Years)", fontsize=9.5)
-    ax.set_ylabel("Maximum Heart Rate Achieved (bpm)", fontsize=9.5)
+    ax.set_title("Seaborn Scatter: Where Does Your Patient Fall in the Dataset?", fontsize=11.5, fontweight="bold", pad=12, color="#f8fafc")
+    ax.set_xlabel("Patient Age (Years)", fontsize=9.5, color="#cbd5e1")
+    ax.set_ylabel("Maximum Heart Rate Achieved (bpm)", fontsize=9.5, color="#cbd5e1")
 
     handles, labels = ax.get_legend_handles_labels()
     custom_labels = []
@@ -281,7 +282,7 @@ def generate_age_thalach_kde_plot(patient_dict: Dict[str, Any]) -> Dict[str, Any
             custom_labels.append("Dataset: Heart Disease Patients (1)")
         else:
             custom_labels.append(lbl)
-    ax.legend(handles, custom_labels, loc="lower left", facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8.5)
+    ax.legend(handles, custom_labels, loc="lower left", facecolor="#1e293b", edgecolor="#334155", labelcolor="#f8fafc", fontsize=8.5)
 
     base64_str = fig_to_base64(fig)
     return {
@@ -305,15 +306,15 @@ def generate_probability_meter_plot(patient_dict: Dict[str, Any], prob_disease: 
     set_colab_theme(ax, fig)
 
     # Horizontal bar from 0 to 100%
-    bar_color = "#dc2626" if is_cad else "#16a34a"
-    ax.barh(["Prediction\nConfidence"], [prob_pct], color=bar_color, height=0.45, edgecolor="#111827", linewidth=0.8)
+    bar_color = "#f43f5e" if is_cad else "#10b981"
+    ax.barh(["Prediction\nConfidence"], [prob_pct], color=bar_color, height=0.45, edgecolor="#0e172a", linewidth=0.8)
 
     # 50% threshold line
-    ax.axvline(50, color="#1e293b", linestyle="--", linewidth=1.5, label="Decision Threshold (50%)")
+    ax.axvline(50, color="#f8fafc", linestyle="--", linewidth=1.5, label="Decision Threshold (50%)")
 
     # Safe vs Risk background zones
-    ax.axvspan(0, 50, color="#dcfce7", alpha=0.35, label="Healthy Zone (< 50%)")
-    ax.axvspan(50, 100, color="#fee2e2", alpha=0.35, label="Heart Disease Zone (>= 50%)")
+    ax.axvspan(0, 50, color="#064e3b", alpha=0.35, label="Healthy Zone (< 50%)")
+    ax.axvspan(50, 100, color="#881337", alpha=0.35, label="Heart Disease Zone (>= 50%)")
 
     ax.text(
         prob_pct / 2,
@@ -327,9 +328,9 @@ def generate_probability_meter_plot(patient_dict: Dict[str, Any], prob_disease: 
     )
 
     ax.set_xlim(0, 100)
-    ax.set_xlabel("Model Predicted Risk Probability (%)", fontsize=9.5)
-    ax.set_title(f"Classification Output: {'HEART DISEASE (Class 1)' if is_cad else 'HEALTHY (Class 0)'} at {prob_pct:.1f}% Confidence", fontsize=11.5, fontweight="bold", pad=12)
-    ax.legend(loc="upper right", facecolor="#ffffff", edgecolor="#cbd5e1", fontsize=8.5)
+    ax.set_xlabel("Model Predicted Risk Probability (%)", fontsize=9.5, color="#cbd5e1")
+    ax.set_title(f"Classification Output: {'HEART DISEASE (Class 1)' if is_cad else 'HEALTHY (Class 0)'} at {prob_pct:.1f}% Confidence", fontsize=11.5, fontweight="bold", pad=12, color="#f8fafc")
+    ax.legend(loc="upper right", facecolor="#1e293b", edgecolor="#334155", labelcolor="#f8fafc", fontsize=8.5)
 
     base64_str = fig_to_base64(fig)
     return {

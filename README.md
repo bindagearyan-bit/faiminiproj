@@ -1,21 +1,22 @@
-# Heart Disease Classifier (UCI Cleveland Dataset)
+# CardioPulse AI — Heart Disease Risk Screening System
 
-An educational, beginner-friendly Python machine learning project demonstrating end-to-end binary classification on clinical cardiac data, built with strict adherence to ML best practices and data leakage prevention.
+An end-to-end Machine Learning web application designed to assess Coronary Artery Disease (CAD) risk in real time using clinical vitals and diagnostic test readings from the renowned UCI Cleveland Heart Disease dataset.
 
-> ⚠️ **IMPORTANT MEDICAL DISCLAIMER: FOR EDUCATIONAL USE ONLY**  
-> This project, code, and trained machine learning pipelines are developed solely for educational and academic purposes. They are **NOT** medical devices, diagnostic instruments, or clinical decision support tools. **DO NOT USE THIS PROJECT OR ITS PREDICTIONS FOR ANY MEDICAL DIAGNOSIS, TREATMENT, OR CLINICAL DECISION-MAKING.** Always seek the advice of a qualified physician or healthcare provider with any medical questions.
+Built as an academic laboratory project (Department of AI & ML) by **Aryan Bindage**, this system pairs a production-grade Scikit-Learn classification pipeline with an executive clinical dashboard and authentic Jupyter/Colab-style dark visualizations.
+
+> 🩺 **Clinical & Academic Disclaimer:**  
+> This software is strictly an educational and laboratory demonstration. It is **NOT** a certified medical diagnostic device or clinical decision support system. Do not use its predictions for patient triage, prescriptions, or clinical decision-making. Always consult certified healthcare practitioners.
 
 ---
 
-## Project Goal
+## 🌟 Key Features
 
-The goal of this project is to provide a clean, complete, and reproducible machine learning pipeline that predicts the presence ($1$) or absence ($0$) of coronary artery disease from clinical patient features while helping learners understand how machine learning models learn from data.
-
-Key pedagogical and engineering principles implemented:
-- **Zero Target Leakage**: Isolates predictor attributes from both binary and original multi-class targets.
-- **Leak-Free Pipelines**: Encapsulates imputation, scaling, and one-hot encoding inside scikit-learn `Pipeline` and `ColumnTransformer`.
-- **Honest Model Selection**: Compares a `DummyClassifier` baseline, `LogisticRegression`, and `RandomForestClassifier` using 5-fold stratified cross-validation on the **training set only**.
-- **Unbiased Test Evaluation**: Evaluates the winning pipeline only **once** on an untouched, held-out test set ($25\%$).
+- **⚡ Instant Real-Time Prediction**: Debounced auto-inference delivers model predictions with calibrated probabilities in under 20 milliseconds as you adjust any parameter.
+- **📋 13 Validated Clinical Attributes**: Complete intake covering patient demographics, blood chemistry, resting ECG, exercise stress tests, fluoroscopy vessels, and thallium scans.
+- **🎨 World-Class Executive Dark UI**: Built with pure Vanilla CSS tokens, radiant verdict auras (Ruby Red for disease detection, Mint Emerald for healthy baselines, Amber for borderline cases), tactile sliders with dynamic progress fills, and WCAG AA contrast.
+- **📊 Authentic Python Data Visualizations**: Generates real-time Seaborn and Matplotlib figures (Biomarker Heatmap, Feature Contribution Weights, Cleveland Dataset Scatter, and Decision Confidence Gauge) styled with a seamless dark notebook aesthetic.
+- **🧪 One-Click Patient Presets**: Instant benchmark profiles to demonstrate High-Risk, Low-Risk, and Borderline scenarios, plus an arbitrary random profile generator.
+- **🔒 Zero Data Leakage**: Standardized preprocessing with median imputation, robust scaling, and one-hot encoding encapsulated within Scikit-Learn `Pipeline` and `ColumnTransformer`.
 
 ---
 
