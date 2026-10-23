@@ -1,4 +1,4 @@
-# CardioPulse AI — Heart Disease Risk Screening System
+# CardioAI — Heart Disease Risk Screening System
 
 An end-to-end Machine Learning web application designed to assess Coronary Artery Disease (CAD) risk in real time using clinical vitals and diagnostic test readings from the renowned UCI Cleveland Heart Disease dataset.
 

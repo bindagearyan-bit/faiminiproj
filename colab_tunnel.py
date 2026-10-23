@@ -1,7 +1,7 @@
 """
 colab_tunnel.py
 
-One-click Google Colab live backend launcher for CardioPulse AI.
+One-click Google Colab live backend launcher for CardioAI.
 Sets up a public HTTPS tunnel (Cloudflare Tunnel or pyngrok) inside Google Colab
 so the website can send live patient vitals directly to Colab and receive predictions
 in real time.
@@ -70,7 +70,7 @@ def setup_cloudflare_tunnel(port=5000):
 
 def main():
     print("=" * 70)
-    print("   🫀 CARDIOPULSE AI — GOOGLE COLAB REAL-TIME BACKEND ENGINE")
+    print("   🫀 CARDIOAI — GOOGLE COLAB REAL-TIME BACKEND ENGINE")
     print("=" * 70)
     
     os.environ["IS_COLAB"] = "1"

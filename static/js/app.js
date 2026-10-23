@@ -1,5 +1,5 @@
 /**
- * CardioPulse AI - Clinical Machine Learning Prediction Controller
+ * CardioAI - Clinical Machine Learning Prediction Controller
  * Powers real-time inference, slider-to-input bidirectional synchronization,
  * dynamic progress tracks, authentic Colab-style Seaborn/Matplotlib visualization,
  * and seamless live connection to Google Colab Cloud Backend.
