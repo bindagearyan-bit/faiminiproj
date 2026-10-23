@@ -49,28 +49,28 @@ print("[STARTUP] Pipeline successfully loaded and ready for live inference.")
 AVAILABLE_VISUALIZATIONS = [
     {
         "id": "auto",
-        "title": "Optimal Diagnostic View",
-        "description": "Selects the most statistically relevant visualization based on patient risk markers",
+        "title": "✨ Auto (Best Fit)",
+        "description": "Automatically selects the single best chart for this patient's values",
     },
     {
         "id": "biomarker_heatmap",
-        "title": "Biomarker Risk Matrix (Seaborn)",
-        "description": "Normalized comparison of patient continuous vitals against Cleveland population baselines",
+        "title": "🔥 Biomarker Heatmap",
+        "description": "Compares patient vitals with healthy medical benchmarks using Seaborn",
     },
     {
         "id": "feature_impact",
-        "title": "Feature Log-Odds Attribution (Scikit-Learn)",
-        "description": "Linear model coefficient contributions towards heart disease risk versus health",
+        "title": "📊 Feature Weights",
+        "description": "Shows which input features pushed the model prediction toward risk vs healthy",
     },
     {
         "id": "age_thalach_kde",
-        "title": "Cohort Population Distribution (Seaborn)",
-        "description": "Bivariate patient positioning against 303 Cleveland cardiac reference cases",
+        "title": "🎯 Patient vs Dataset",
+        "description": "Shows where this patient falls among all 303 patients in the Cleveland dataset",
     },
     {
         "id": "prob_gauge",
-        "title": "Decision Boundary & Probability (Matplotlib)",
-        "description": "Model classification confidence relative to the 50% decision threshold",
+        "title": "📈 Probability Gauge",
+        "description": "Shows the 50% classification threshold and the model's confidence",
     },
 ]
 

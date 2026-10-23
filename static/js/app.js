@@ -204,13 +204,13 @@
 
         if (statusPill) {
             statusPill.className = "status-tag " + (isCAD ? "red" : "green");
-            statusPill.textContent = isCAD ? "Positive (Class 1)" : "Normal Sinus (Class 0)";
+            statusPill.textContent = isCAD ? "🔴 Heart Disease (Class 1)" : "🟢 Healthy (Class 0)";
         }
 
         if (diagnosisHeadline) {
             diagnosisHeadline.textContent = isCAD
-                ? "Coronary Artery Disease Detected"
-                : "Absence of Significant Coronary Disease";
+                ? "Coronary Heart Disease Detected"
+                : "No Heart Disease Detected (Healthy)";
         }
 
         if (riskTierVal) {
@@ -221,8 +221,8 @@
             );
         }
 
-        if (probDiseaseText) probDiseaseText.textContent = `CAD Probability: ${probCAD}%`;
-        if (probHealthyText) probHealthyText.textContent = `Normal: ${probHealthy}%`;
+        if (probDiseaseText) probDiseaseText.textContent = `CAD Risk: ${probCAD}%`;
+        if (probHealthyText) probHealthyText.textContent = `Healthy: ${probHealthy}%`;
         if (probBarDisease) probBarDisease.style.width = `${probCAD}%`;
         if (probBarHealthy) probBarHealthy.style.width = `${probHealthy}%`;
 
@@ -239,7 +239,7 @@
                 });
             } else {
                 const li = document.createElement("li");
-                li.textContent = "All primary diagnostic parameters reside within non-critical clinical reference intervals.";
+                li.textContent = "All primary health readings are in the normal baseline range.";
                 factorsList.appendChild(li);
             }
         }
