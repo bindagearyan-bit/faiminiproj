@@ -139,12 +139,28 @@ The winning **Logistic Regression Pipeline** achieved the following on the untou
 
 ---
 
+### Step 5: Launch Live Interactive Web Diagnostic Dashboard
+```bash
+python app.py
+```
+- Starts the live clinical diagnostic web application at:
+  - **Local Web URL**: [http://127.0.0.1:5000](http://127.0.0.1:5000) or [http://localhost:5000](http://localhost:5000)
+- **Arbitrary Real-Time Input**: Faculty can test ANY custom patient attributes via interactive sliders and segmented controls without relying on pre-recorded dataset records.
+- **Dynamic Single Visualization**: The visualizer automatically selects **only 1** optimal representation from Matplotlib, Seaborn, and Scikit-Learn (Clinical Biomarker Heatmap, Model Log-Odds Attribution, ECG ST-Segment Waveform, or Cardiac Stress Space) that best portrays the patient's specific outcome.
+
+---
+
 ## Generated File Structure
 
 ```text
 heart-disease-classifier/
-├── .gitignore                          # Ignores venv, bytecode, raw data, outputs (tracks model artifact)
-├── requirements.txt                    # Project dependencies
+├── app.py                              # Flask server for live clinical web dashboard
+├── templates/
+│   └── index.html                      # Dark-mode responsive clinical UI
+├── static/
+│   ├── css/style.css                   # Medical dashboard styling & glassmorphism
+│   └── js/app.js                       # Real-time inference & slider synchronization
+├── requirements.txt                    # Project dependencies (including Flask)
 ├── README.md                           # Project overview, citation, commands, results
 ├── learning_walkthrough.md             # In-depth beginner ML concepts & tutorial
 ├── data/
@@ -166,7 +182,8 @@ heart-disease-classifier/
     ├── download_data.py                # Dataset acquisition and preprocessing
     ├── eda.py                          # Exploratory data analysis and charting
     ├── train_model.py                  # Training, cross-validation, and evaluation
-    └── predict.py                      # Interactive & CLI inference on custom patient values
+    ├── predict.py                      # Interactive & CLI inference on custom patient values
+    └── visualization.py                # Dynamic single-best Matplotlib/Seaborn visualizer
 ```
 
 ---
