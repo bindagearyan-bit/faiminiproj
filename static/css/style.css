@@ -171,84 +171,12 @@ body {
 input:checked + .slider { background-color: var(--primary-blue); }
 input:checked + .slider:before { transform: translateX(16px); }
 
-/* ==========================================================================
-   Viva Summary Box (Cheat Sheet for Faculty Questions)
-   ========================================================================== */
 .main-container {
     max-width: 1480px;
     margin: 0 auto;
     padding: 1.25rem 1.8rem 2.5rem;
     width: 100%;
     flex: 1;
-}
-
-.viva-summary-box {
-    background: #172554;
-    border: 1px solid #1e40af;
-    border-radius: var(--radius-lg);
-    padding: 1rem 1.4rem;
-    margin-bottom: 1.25rem;
-}
-
-.viva-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75rem;
-}
-
-.viva-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #93c5fd;
-    font-size: 0.95rem;
-}
-
-.btn-toggle-summary {
-    background: transparent;
-    border: 1px solid rgba(147, 197, 253, 0.3);
-    color: #93c5fd;
-    font-size: 0.75rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-}
-.btn-toggle-summary:hover {
-    background: rgba(147, 197, 253, 0.1);
-}
-
-.viva-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-}
-
-@media (max-width: 900px) {
-    .viva-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-.viva-item {
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: var(--radius-md);
-    padding: 0.75rem 0.9rem;
-}
-
-.viva-tag {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #60a5fa;
-    margin-bottom: 0.25rem;
-}
-
-.viva-item p {
-    font-size: 0.8rem;
-    color: #e2e8f0;
-    line-height: 1.4;
 }
 
 /* ==========================================================================
