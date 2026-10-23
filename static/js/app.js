@@ -1,6 +1,7 @@
 /**
- * CardioStratify - Interactive Diagnostic Application Logic
- * Evidence-based live machine learning inference and visualization controller.
+ * CardioPulse AI - Clinical Machine Learning Prediction Controller
+ * Powers real-time inference, slider-to-input bidirectional synchronization,
+ * dynamic progress tracks, and authentic Colab-style Seaborn/Matplotlib visualization.
  */
 
 (function () {
@@ -36,7 +37,7 @@
     const btnRandomize = document.getElementById("btnRandomize");
     const btnResetDefaults = document.getElementById("btnResetDefaults");
 
-    // Output Elements
+    // Output Diagnostic Elements
     const resultCard = document.getElementById("resultCard");
     const statusPill = document.getElementById("statusPill");
     const diagnosisHeadline = document.getElementById("diagnosisHeadline");
@@ -56,6 +57,18 @@
     const vizReasonText = document.getElementById("vizReasonText");
     const switcherPills = document.getElementById("switcherPills");
 
+    /**
+     * Updates range slider background fill for an executive tactile appearance.
+     */
+    function updateSliderTrack(slider) {
+        if (!slider) return;
+        const min = parseFloat(slider.min) || 0;
+        const max = parseFloat(slider.max) || 100;
+        const val = parseFloat(slider.value) || min;
+        const pct = Math.max(0, Math.min(100, ((val - min) / (max - min)) * 100));
+        slider.style.background = `linear-gradient(to right, #06b6d4 0%, #3b82f6 ${pct}%, #1e293b ${pct}%, #1e293b 100%)`;
+    }
+
     function setupContinuousSync() {
         CONTINUOUS_FEATURES.forEach((feat) => {
             const slider = document.getElementById(`${feat}_slider`);
@@ -63,13 +76,18 @@
 
             if (!slider || !numInput) return;
 
+            // Initial track fill
+            updateSliderTrack(slider);
+
             slider.addEventListener("input", () => {
                 numInput.value = slider.value;
+                updateSliderTrack(slider);
                 triggerAutoInference();
             });
 
             numInput.addEventListener("input", () => {
                 slider.value = numInput.value;
+                updateSliderTrack(slider);
                 triggerAutoInference();
             });
         });
@@ -122,7 +140,10 @@
             const numInput = document.getElementById(key);
             const slider = document.getElementById(`${key}_slider`);
             if (numInput) numInput.value = val;
-            if (slider) slider.value = val;
+            if (slider) {
+                slider.value = val;
+                updateSliderTrack(slider);
+            }
 
             const select = document.querySelector(`select#${key}`);
             if (select) {
@@ -156,7 +177,7 @@
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             runPrediction();
-        }, 180);
+        }, 160);
     }
 
     async function runPrediction() {
@@ -191,34 +212,58 @@
     }
 
     function renderPredictionResults(res) {
-        const isCAD = res.prediction === 1;
         const probCAD = res.prob_disease;
         const probHealthy = res.prob_no_disease;
+        const isHigh = probCAD >= 60;
+        const isModerate = probCAD >= 35 && probCAD < 60;
 
         if (latencyVal) latencyVal.textContent = `${res.inference_time_ms} ms`;
 
         if (resultCard) {
-            resultCard.classList.remove("state-disease", "state-healthy");
-            resultCard.classList.add(isCAD ? "state-disease" : "state-healthy");
+            resultCard.classList.remove("state-high-risk", "state-moderate-risk", "state-low-risk");
+            if (isHigh) {
+                resultCard.classList.add("state-high-risk");
+            } else if (isModerate) {
+                resultCard.classList.add("state-moderate-risk");
+            } else {
+                resultCard.classList.add("state-low-risk");
+            }
         }
 
         if (statusPill) {
-            statusPill.className = "status-tag " + (isCAD ? "red" : "green");
-            statusPill.textContent = isCAD ? "🔴 Heart Disease (Class 1)" : "🟢 Healthy (Class 0)";
+            if (isHigh) {
+                statusPill.className = "status-tag red";
+                statusPill.textContent = "🔴 Coronary Heart Disease (Class 1)";
+            } else if (isModerate) {
+                statusPill.className = "status-tag amber";
+                statusPill.textContent = "🟡 Borderline / Moderate Risk";
+            } else {
+                statusPill.className = "status-tag green";
+                statusPill.textContent = "🟢 Healthy Patient Profile (Class 0)";
+            }
         }
 
         if (diagnosisHeadline) {
-            diagnosisHeadline.textContent = isCAD
-                ? "Coronary Heart Disease Detected"
-                : "No Heart Disease Detected (Healthy)";
+            if (isHigh) {
+                diagnosisHeadline.textContent = "Heart Disease Risk Detected";
+            } else if (isModerate) {
+                diagnosisHeadline.textContent = "Borderline Cardiac Risk Factors";
+            } else {
+                diagnosisHeadline.textContent = "No Heart Disease Detected (Healthy)";
+            }
         }
 
         if (riskTierVal) {
-            riskTierVal.textContent = res.risk_tier.toUpperCase();
-            riskTierVal.className = "box-value " + (
-                res.risk_tier.includes("High") ? "red" :
-                res.risk_tier.includes("Moderate") ? "amber" : "green"
-            );
+            if (isHigh) {
+                riskTierVal.textContent = "HIGH RISK";
+                riskTierVal.className = "box-value red";
+            } else if (isModerate) {
+                riskTierVal.textContent = "MODERATE RISK";
+                riskTierVal.className = "box-value amber";
+            } else {
+                riskTierVal.textContent = "LOW RISK";
+                riskTierVal.className = "box-value green";
+            }
         }
 
         if (probDiseaseText) probDiseaseText.textContent = `CAD Risk: ${probCAD}%`;
@@ -234,12 +279,15 @@
             if (res.key_factors && res.key_factors.length > 0) {
                 res.key_factors.forEach((factor) => {
                     const li = document.createElement("li");
-                    li.textContent = factor;
+                    const isRiskFactor = factor.includes("High") || factor.includes("Silent") || factor.includes("Stress") || factor.includes("Blocked") || factor.includes("Strain");
+                    li.className = isRiskFactor ? "factor-item factor-risk" : "factor-item factor-safe";
+                    li.innerHTML = `<span class="factor-icon">${isRiskFactor ? "⚠️" : "✅"}</span> <span class="factor-text">${factor}</span>`;
                     factorsList.appendChild(li);
                 });
             } else {
                 const li = document.createElement("li");
-                li.textContent = "All primary health readings are in the normal baseline range.";
+                li.className = "factor-item factor-safe";
+                li.innerHTML = `<span class="factor-icon">✅</span> <span class="factor-text">All primary health readings are within the standard normal baseline.</span>`;
                 factorsList.appendChild(li);
             }
         }
@@ -309,8 +357,12 @@
             },
         };
 
+        const presetButtons = document.querySelectorAll(".btn-case-preset");
+
         document.querySelectorAll(".btn-case-preset[data-preset]").forEach((btn) => {
             btn.addEventListener("click", () => {
+                presetButtons.forEach((b) => b.classList.remove("active-preset"));
+                btn.classList.add("active-preset");
                 const presetKey = btn.getAttribute("data-preset");
                 if (presetData[presetKey]) {
                     setFormData(presetData[presetKey]);
@@ -320,6 +372,8 @@
 
         if (btnRandomize) {
             btnRandomize.addEventListener("click", () => {
+                presetButtons.forEach((b) => b.classList.remove("active-preset"));
+                btnRandomize.classList.add("active-preset");
                 const randomPatient = {
                     age: Math.floor(Math.random() * (75 - 32 + 1)) + 32,
                     sex: Math.random() > 0.35 ? 1 : 0,
@@ -341,6 +395,8 @@
 
         if (btnResetDefaults) {
             btnResetDefaults.addEventListener("click", () => {
+                presetButtons.forEach((b) => b.classList.remove("active-preset"));
+                btnResetDefaults.classList.add("active-preset");
                 setFormData(DEFAULT_VALUES);
             });
         }
