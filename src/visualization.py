@@ -350,35 +350,17 @@ def select_best_visualization(
     override_id: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
-    Intelligently selects ONLY 1 visualization that best depicts the patient's result.
-    Simple, intuitive rule for academic presentation:
-      - If patient has abnormal BP, Cholesterol, or vessels -> Biomarker Heatmap (Seaborn)
-      - If user wants to see what features caused the output -> Feature Weights (Scikit-Learn)
-      - If extreme age or heart rate -> Dataset Scatter Plot (Seaborn)
-      - Otherwise -> Model Probability Gauge (Matplotlib)
+    Renders the exact decision visualization requested by the user.
+    Defaults directly to the Model Decision Threshold & Probability Gauge (Matplotlib)
+    so as values are entered, the exact decision boundary graph is rendered immediately.
     """
-    oldpeak = float(patient_dict.get("oldpeak", 0.0))
-    ca = float(patient_dict.get("ca", 0.0))
-    chol = float(patient_dict.get("chol", 200.0))
-    trestbps = float(patient_dict.get("trestbps", 120.0))
-    thalach = float(patient_dict.get("thalach", 150.0))
-    age = float(patient_dict.get("age", 55.0))
-
-    if override_id == "biomarker_heatmap" or (
-        override_id is None and (ca >= 1.0 or chol >= 240.0 or trestbps >= 140.0)
-    ):
-        chosen = generate_biomarker_heatmap(patient_dict)
-    elif override_id == "feature_impact" or (
-        override_id is None and (oldpeak >= 1.5 or patient_dict.get("exang", 0) == 1)
-    ):
-        chosen = generate_feature_impact_plot(pipeline, patient_dict)
-    elif override_id == "age_thalach_kde" or (
-        override_id is None and (thalach < 125.0 or age >= 65.0)
-    ):
-        chosen = generate_age_thalach_kde_plot(patient_dict)
-    elif override_id == "prob_gauge" or override_id is None:
-        chosen = generate_probability_meter_plot(patient_dict, prob_disease)
+    if override_id == "biomarker_heatmap":
+        return generate_biomarker_heatmap(patient_dict)
+    elif override_id == "feature_impact":
+        return generate_feature_impact_plot(pipeline, patient_dict)
+    elif override_id == "age_thalach_kde":
+        return generate_age_thalach_kde_plot(patient_dict)
     else:
-        chosen = generate_feature_impact_plot(pipeline, patient_dict)
+        # Default: Model Decision Threshold & Probability Gauge (Image 2)
+        return generate_probability_meter_plot(patient_dict, prob_disease)
 
-    return chosen

@@ -40,13 +40,9 @@
             </div>
 
             <div class="header-utilities">
-                <button type="button" class="colab-connect-btn" id="btnOpenColabModal" title="Connect to Google Colab Cloud Backend">
-                    <span class="colab-dot" id="colabStatusDot"></span>
-                    <span id="colabStatusText">☁️ Backend: Local Engine</span>
-                </button>
                 <div class="model-status-pill" title="5-Fold Stratified Cross-Validation on training split with zero data leakage">
                     <span class="status-indicator"></span>
-                    <span class="status-label">Pipeline Ready &bull; Zero Leakage</span>
+                    <span class="status-label">Colab Pipeline Ready &bull; Zero Leakage</span>
                 </div>
                 <div class="eval-toggle-wrap">
                     <label class="toggle-switch" for="autoInferToggle">
@@ -312,8 +308,8 @@
             <section class="panel panel-diagnostic" aria-labelledby="diagnosticPanelTitle">
                 <header class="panel-header">
                     <div>
-                        <h2 class="panel-heading" id="diagnosticPanelTitle">2. Prediction Result &amp; Analysis</h2>
-                        <p class="panel-subtext">Real-time classification result + single visual graph explaining the output.</p>
+                        <h2 class="panel-heading" id="diagnosticPanelTitle">2. Prediction Result &amp; Visualization</h2>
+                        <p class="panel-subtext">Live machine learning classification output rendered dynamically with Matplotlib.</p>
                     </div>
                     <div class="latency-indicator" aria-label="Model execution latency">
                         <span class="latency-label">⏱️ Speed:</span>
@@ -321,59 +317,15 @@
                     </div>
                 </header>
 
-                <!-- Clinical Diagnostic Summary Card -->
-                <article class="assessment-card" id="resultCard" aria-live="polite">
-                    <div class="assessment-primary-row">
-                        <div class="assessment-verdict-group">
-                            <span class="status-tag" id="statusPill">Evaluating inputs...</span>
-                            <h3 class="diagnosis-verdict" id="diagnosisHeadline">Awaiting Patient Data</h3>
-                        </div>
-                        <div class="risk-classification-box" id="riskTierBadge">
-                            <span class="box-caption">RISK LEVEL</span>
-                            <span class="box-value" id="riskTierVal">--</span>
-                        </div>
-                    </div>
-
-                    <!-- Calibrated Posterior Probability Bar -->
-                    <div class="probability-block">
-                        <div class="prob-meta-row">
-                            <span class="prob-label">Heart Disease Risk Chance</span>
-                            <span class="prob-values">
-                                <span class="val-disease" id="probDiseaseText">CAD Risk: --%</span>
-                                <span class="val-separator" aria-hidden="true">&bull;</span>
-                                <span class="val-healthy" id="probHealthyText">Normal: --%</span>
-                            </span>
-                        </div>
-                        <div class="prob-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-                            <div class="prob-segment-disease" id="probBarDisease" style="width: 50%;"></div>
-                            <div class="prob-segment-healthy" id="probBarHealthy" style="width: 50%;"></div>
-                        </div>
-                        <div class="prob-legend-row">
-                            <span class="legend-risk">🔴 Class 1 &bull; Heart Disease Detected</span>
-                            <span class="legend-safe">🟢 Class 0 &bull; Healthy Patient</span>
-                        </div>
-                    </div>
-
-                    <!-- Clinical Indicator Highlights -->
-                    <div class="findings-block">
-                        <h4 class="findings-heading">
-                            <span>📋 Key Reasons for this Prediction:</span>
-                        </h4>
-                        <ul class="findings-list" id="factorsList">
-                            <li>Awaiting input numbers...</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <!-- Statistical Visualization Frame -->
+                <!-- Statistical Visualization Frame (Image 2) -->
                 <figure class="visualization-figure">
                     <div class="figure-controls-bar">
                         <div class="figure-title-group">
                             <div class="figure-badge-row">
                                 <span class="provenance-tag">PYTHON DATA VISUALIZATION</span>
-                                <span class="engine-tag" id="vizLibraryBadge">Seaborn &amp; Matplotlib</span>
+                                <span class="engine-tag" id="vizLibraryBadge">Matplotlib (Decision Boundary Plot)</span>
                             </div>
-                            <figcaption class="figure-caption-title" id="vizCardTitle">Generated Result Graph</figcaption>
+                            <figcaption class="figure-caption-title" id="vizCardTitle">📈 Model Decision Threshold &amp; Probability Gauge</figcaption>
                             <p class="figure-caption-subtext">The model picks <strong>1 best chart</strong> to clearly explain this patient's prediction.</p>
                         </div>
 
@@ -381,11 +333,11 @@
                         <div class="view-switcher-bar">
                             <span class="switcher-prompt">Switch Graph View:</span>
                             <div class="switcher-pill-group" id="switcherPills" role="tablist" aria-label="Visual representation options">
-                                <button type="button" class="view-pill active" data-viz="auto" role="tab" aria-selected="true">✨ Auto (Best Fit)</button>
+                                <button type="button" class="view-pill" data-viz="auto" role="tab" aria-selected="false">✨ Auto (Best Fit)</button>
                                 <button type="button" class="view-pill" data-viz="biomarker_heatmap" role="tab" aria-selected="false">🔥 Biomarker Heatmap</button>
                                 <button type="button" class="view-pill" data-viz="feature_impact" role="tab" aria-selected="false">📊 Feature Weights</button>
                                 <button type="button" class="view-pill" data-viz="age_thalach_kde" role="tab" aria-selected="false">🎯 Patient vs Dataset</button>
-                                <button type="button" class="view-pill" data-viz="prob_gauge" role="tab" aria-selected="false">📈 Probability Gauge</button>
+                                <button type="button" class="view-pill active" data-viz="prob_gauge" role="tab" aria-selected="true">📈 Probability Gauge</button>
                             </div>
                         </div>
                     </div>
@@ -394,7 +346,7 @@
                     <div class="figure-canvas-frame" id="plotFrame">
                         <div class="canvas-loader" id="plotLoader" role="status" aria-live="polite">
                             <div class="loading-ring" aria-hidden="true"></div>
-                            <span>Generating Matplotlib / Seaborn visualization...</span>
+                            <span>Generating Matplotlib visualization...</span>
                         </div>
                         <img id="vizImage" class="rendered-canvas-img" alt="Dynamic statistical visualization depicting patient diagnostic standing" style="display: none;">
                     </div>
@@ -402,7 +354,7 @@
                     <!-- Clinical Graphic Interpretation Callout -->
                     <div class="figure-interpretation-card">
                         <span class="interpretation-header">💡 What this graph shows:</span>
-                        <p class="interpretation-body" id="vizReasonText">Evaluating patient health readings directly against standard medical baselines.</p>
+                        <p class="interpretation-body" id="vizReasonText">Shows the 50% machine learning decision line and how confident the model is in this prediction.</p>
                     </div>
                 </figure>
             </section>
@@ -423,58 +375,7 @@
         </div>
     </footer>
 
-    <!-- Google Colab Cloud Bridge Modal -->
-    <div class="colab-modal-backdrop" id="colabModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="colabModalTitle">
-        <div class="colab-modal-card">
-            <header class="modal-card-header">
-                <div class="modal-title-group">
-                    <span class="modal-icon">☁️</span>
-                    <div>
-                        <h3 id="colabModalTitle" class="modal-heading">Connect Google Colab Cloud Backend</h3>
-                        <p class="modal-subheading">Execute predictions &amp; generate charts live inside Google Colab while using this website.</p>
-                    </div>
-                </div>
-                <button type="button" class="btn-close-modal" id="btnCloseColabModal" aria-label="Close dialog">&times;</button>
-            </header>
 
-            <div class="modal-card-body">
-                <div class="colab-instructions-box">
-                    <h4 class="instructions-heading">📋 Quick 3-Step Viva Demonstration:</h4>
-                    <ol class="instructions-list">
-                        <li>Open the official notebook in Google Colab:
-                            <div class="colab-badge-link-wrap">
-                                <a href="https://colab.research.google.com/github/bindagearyan-bit/faiminiproj/blob/main/notebooks/CardioPulse_Colab_Live_Backend.ipynb" target="_blank" rel="noopener noreferrer" class="btn-open-colab-link">
-                                    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" class="colab-badge-svg">
-                                </a>
-                            </div>
-                        </li>
-                        <li>Run the cells in Google Colab to start the live tunnel backend.</li>
-                        <li>Copy the generated <code>🌐 Public API URL</code> (e.g. <code>https://...trycloudflare.com</code>) and paste it below:</li>
-                    </ol>
-                </div>
-
-                <div class="colab-input-group">
-                    <label for="colabUrlInput" class="colab-input-label">Google Colab Tunnel URL:</label>
-                    <div class="colab-url-row">
-                        <input type="url" id="colabUrlInput" class="colab-url-field" placeholder="https://xxxx.trycloudflare.com" spellcheck="false" autocomplete="off">
-                        <button type="button" class="btn-connect-colab" id="btnConnectColab">
-                            <span>⚡ Connect to Colab</span>
-                        </button>
-                    </div>
-                    <div class="colab-ping-status" id="colabPingStatus">Status: Using Local Python Engine (http://127.0.0.1:5000)</div>
-                </div>
-
-                <div class="colab-mode-toggles">
-                    <button type="button" class="btn-mode-choice active" id="btnUseLocalServer">
-                        <span>💻 Switch to Local Python Engine</span>
-                    </button>
-                    <a href="https://github.com/bindagearyan-bit/faiminiproj/blob/main/notebooks/CardioPulse_Colab_Live_Backend.ipynb" target="_blank" rel="noopener noreferrer" class="btn-mode-choice link-mode">
-                        <span>📖 View Notebook on GitHub</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Interactive Logic Controller -->
     <script src="/static/js/app.js"></script>
