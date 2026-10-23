@@ -323,31 +323,31 @@ def predict_patient(
     else:
         risk_tier = "Low Risk"
 
-    # Analyze key clinical indicators
+    # Analyze key indicators in simple terms for AIML presentation
     key_factors = []
     if row_dict["cp"] == 4:
-        key_factors.append("Asymptomatic chest pain type (cp=4, highest statistical correlation with CAD)")
+        key_factors.append("Silent / Asymptomatic Chest Pain ('cp'=4, strongest statistical heart disease indicator in dataset)")
     elif row_dict["cp"] in [1, 2]:
-        key_factors.append("Typical/Atypical angina symptoms noted")
+        key_factors.append("Chest pain or heaviness reported ('cp'=1 or 2)")
 
-    if row_dict["oldpeak"] >= 1.5:
-        key_factors.append(f"Significant ST segment depression ({row_dict['oldpeak']} mm during exercise)")
     if row_dict["ca"] > 0:
-        key_factors.append(f"Fluoroscopy revealed {int(row_dict['ca'])} major coronary vessel(s) with calcification")
+        key_factors.append(f"{int(row_dict['ca'])} Blocked Blood Vessel(s) detected (ca={int(row_dict['ca'])})")
+    if row_dict["oldpeak"] >= 1.5:
+        key_factors.append(f"High ECG Stress test score ({row_dict['oldpeak']}, shows heart muscle strain)")
     if row_dict["thal"] == 7.0:
-        key_factors.append("Thallium scan detected reversible perfusion defect (active myocardial ischemia)")
+        key_factors.append("Blood flow test shows severe blockage in coronary arteries (thal=7.0)")
     elif row_dict["thal"] == 6.0:
-        key_factors.append("Thallium scan detected fixed defect (evidence of past myocardial infarction)")
+        key_factors.append("Blood flow test shows partial blockage or prior damage (thal=6.0)")
     if row_dict["exang"] == 1:
-        key_factors.append("Patient experiences exercise-induced angina")
+        key_factors.append("Chest pain triggered by exercise (exang=1)")
     if row_dict["trestbps"] >= 140:
-        key_factors.append(f"Elevated resting blood pressure ({row_dict['trestbps']} mm Hg, Stage 2 hypertension)")
+        key_factors.append(f"High Blood Pressure ({row_dict['trestbps']} mm Hg, normal is ~120)")
     if row_dict["chol"] >= 240:
-        key_factors.append(f"High serum cholesterol ({row_dict['chol']} mg/dl)")
+        key_factors.append(f"High Cholesterol ({row_dict['chol']} mg/dl, desirable is < 200)")
     if row_dict["thalach"] < 120:
-        key_factors.append(f"Blunted maximum heart rate ({row_dict['thalach']} bpm reached)")
+        key_factors.append(f"Low Maximum Heart Rate ({row_dict['thalach']} bpm, heart cannot pump adequately under load)")
 
-    label = "Heart Disease Detected (Class 1)" if prediction == 1 else "No Heart Disease Detected (Class 0)"
+    label = "Heart Disease Detected (Class 1)" if prediction == 1 else "Healthy / No Heart Disease (Class 0)"
 
     return {
         "prediction": prediction,

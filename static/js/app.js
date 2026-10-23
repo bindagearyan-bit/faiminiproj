@@ -406,6 +406,16 @@
         setupPresets();
         setupFacultySwitcher();
 
+        const btnToggleSummary = document.getElementById("btnToggleSummary");
+        const vivaGrid = document.getElementById("vivaGrid");
+        if (btnToggleSummary && vivaGrid) {
+            btnToggleSummary.addEventListener("click", () => {
+                const isHidden = vivaGrid.style.display === "none";
+                vivaGrid.style.display = isHidden ? "grid" : "none";
+                btnToggleSummary.textContent = isHidden ? "Hide Guide" : "Show Guide";
+            });
+        }
+
         if (autoInferToggle) {
             autoInferToggle.addEventListener("change", (e) => {
                 isAutoInferEnabled = e.target.checked;

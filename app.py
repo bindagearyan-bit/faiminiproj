@@ -47,28 +47,28 @@ print("[STARTUP] Pipeline successfully loaded and ready for live inference.")
 AVAILABLE_VISUALIZATIONS = [
     {
         "id": "auto",
-        "title": "✨ Auto (Model AI Choice)",
-        "description": "Selects the single best visualization depicting this patient's findings",
+        "title": "✨ Auto (Best Fit)",
+        "description": "Automatically selects the single best chart for this patient's values",
     },
     {
         "id": "biomarker_heatmap",
-        "title": "🔥 Biomarker Risk Heatmap",
-        "description": "Seaborn multi-marker normalized thermal risk intensity matrix",
+        "title": "🔥 Seaborn Heatmap (Patient vs Normal)",
+        "description": "Compares patient vitals with healthy medical benchmarks using Seaborn",
     },
     {
         "id": "feature_impact",
-        "title": "📊 ML Feature Attribution (Log-Odds)",
-        "description": "Scikit-Learn pipeline linear weights & coefficient attribution",
-    },
-    {
-        "id": "ecg_ischemia",
-        "title": "📈 ECG ST-Segment Waveform",
-        "description": "Matplotlib exercise ST-depression & depolarization ischemia curve",
+        "title": "📊 Model Feature Weights (Scikit-Learn)",
+        "description": "Shows which input features pushed the model prediction toward risk vs healthy",
     },
     {
         "id": "age_thalach_kde",
-        "title": "🎯 Cardiac Stress Space (Age vs HR)",
-        "description": "Seaborn bivariate KDE distribution & age-predicted max HR zone",
+        "title": "🎯 Dataset Scatter Plot (Seaborn)",
+        "description": "Shows where this patient falls among all 303 patients in the Cleveland dataset",
+    },
+    {
+        "id": "prob_gauge",
+        "title": "📈 Prediction Probability Gauge (Matplotlib)",
+        "description": "Shows the 50% classification threshold and the model's confidence",
     },
 ]
 
