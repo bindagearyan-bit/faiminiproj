@@ -147,7 +147,21 @@ python app.py
 - Starts the live clinical diagnostic web application at:
   - **Local Web URL**: [http://127.0.0.1:5000](http://127.0.0.1:5000) or [http://localhost:5000](http://localhost:5000)
 - **Arbitrary Real-Time Input**: Faculty can test ANY custom patient attributes via interactive sliders and segmented controls without relying on pre-recorded dataset records.
-- **Dynamic Single Visualization**: The visualizer automatically selects **only 1** optimal representation from Matplotlib, Seaborn, and Scikit-Learn (Clinical Biomarker Heatmap, Model Log-Odds Attribution, ECG ST-Segment Waveform, or Cardiac Stress Space) that best portrays the patient's specific outcome.
+- **Dynamic Single Visualization**: The visualizer automatically selects **only 1** optimal representation from Matplotlib, Seaborn, and Scikit-Learn that best portrays the patient's specific outcome.
+
+---
+
+### Step 6: Run Simultaneously on Google Colab (Cloud Backend)
+
+You can run the model and inference engine directly inside **Google Colab**, while using the website to test inputs:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/bindagearyan-bit/faiminiproj/blob/main/notebooks/CardioPulse_Colab_Live_Backend.ipynb)
+
+1. Open [`notebooks/CardioPulse_Colab_Live_Backend.ipynb`](notebooks/CardioPulse_Colab_Live_Backend.ipynb) in Google Colab.
+2. Run the notebook cells to launch `!python colab_tunnel.py`.
+3. Copy the public tunnel URL printed in Colab (e.g. `https://xxxx.trycloudflare.com` or `https://xxxx.ngrok-free.app`).
+4. On the website, click **"☁️ Connect Google Colab"** in the top navigation bar, paste the URL, and click **"Connect"**.
+5. As you adjust sliders on the website, Google Colab simultaneously receives the patient vitals, calculates the probability, generates the Seaborn heatmap, and streams the output directly to the website!
 
 ---
 
@@ -156,12 +170,16 @@ python app.py
 ```text
 heart-disease-classifier/
 ├── app.py                              # Flask server for live clinical web dashboard
+├── colab_tunnel.py                     # Google Colab live tunnel and cloud backend runner
+├── notebooks/
+│   └── CardioPulse_Colab_Live_Backend.ipynb # One-click Colab notebook for faculty viva
 ├── templates/
-│   └── index.html                      # Dark-mode responsive clinical UI
+│   └── index.html                      # Dark-mode responsive clinical UI & Colab modal
 ├── static/
-│   ├── css/style.css                   # Medical dashboard styling & glassmorphism
-│   └── js/app.js                       # Real-time inference & slider synchronization
-├── requirements.txt                    # Project dependencies (including Flask)
+│   ├── css/style.css                   # World-class clinical design system & dark theme
+│   └── js/app.js                       # Real-time inference, slider sync & Colab cloud bridge
+├── requirements.txt                    # Project dependencies (including Flask & pyngrok)
+
 ├── README.md                           # Project overview, citation, commands, results
 ├── learning_walkthrough.md             # In-depth beginner ML concepts & tutorial
 ├── data/

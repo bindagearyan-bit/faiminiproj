@@ -1166,6 +1166,295 @@ body {
 }
 
 /* ==========================================================================
+   Google Colab Cloud Bridge & Modal Styling
+   ========================================================================== */
+.colab-connect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.78rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.colab-connect-btn:hover {
+    background: rgba(56, 189, 248, 0.18);
+    border-color: #38bdf8;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+    transform: translateY(-1px);
+}
+
+.colab-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #64748b;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.colab-dot.connected {
+    background-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.85);
+    animation: breathingDot 2.2s ease-in-out infinite;
+}
+
+/* Modal Backdrop */
+.colab-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 7, 14, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1.5rem;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.colab-modal-card {
+    background: var(--bg-surface-elevated);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: var(--radius-lg);
+    max-width: 620px;
+    width: 100%;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(56, 189, 248, 0.12);
+    overflow: hidden;
+    animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px) scale(0.97); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.25rem 1.4rem;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(12, 19, 34, 0.6);
+}
+
+.modal-title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.modal-icon {
+    font-size: 1.6rem;
+}
+
+.modal-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.modal-subheading {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 0.15rem;
+}
+
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-xs);
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.btn-close-modal:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-card-body {
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.colab-instructions-box {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
+}
+
+.instructions-heading {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 0.55rem;
+}
+
+.instructions-list {
+    margin-left: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+}
+
+.instructions-list li {
+    margin-bottom: 0.4rem;
+}
+
+.instructions-list code {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: #38bdf8;
+    background: rgba(56, 189, 248, 0.12);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+.colab-badge-link-wrap {
+    margin-top: 0.35rem;
+    margin-bottom: 0.2rem;
+}
+
+.colab-badge-svg {
+    height: 24px;
+    vertical-align: middle;
+}
+
+/* Colab Input Row */
+.colab-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.colab-input-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.colab-url-row {
+    display: flex;
+    gap: 0.65rem;
+}
+
+.colab-url-field {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border-contrast);
+    border-radius: var(--radius-sm);
+    color: #38bdf8;
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+    padding: 0.6rem 0.85rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.colab-url-field:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+}
+
+.btn-connect-colab {
+    padding: 0.6rem 1.15rem;
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    border: none;
+    border-radius: var(--radius-sm);
+    color: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+.btn-connect-colab:hover {
+    background: linear-gradient(135deg, #0369a1, #1d4ed8);
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.5);
+    transform: translateY(-1px);
+}
+
+.colab-ping-status {
+    font-size: 0.74rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+}
+
+.colab-ping-status.success {
+    color: #34d399;
+}
+
+.colab-ping-status.error {
+    color: #fb7185;
+}
+
+/* Colab Mode Toggles */
+.colab-mode-toggles {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 0.2rem;
+}
+
+.btn-mode-choice {
+    flex: 1;
+    padding: 0.55rem 0.85rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.btn-mode-choice:hover {
+    background: var(--bg-cell);
+    color: var(--text-primary);
+    border-color: var(--border-contrast);
+}
+
+.btn-mode-choice.active {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+    border-color: rgba(37, 99, 235, 0.4);
+}
+
+.btn-mode-choice.link-mode {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
    Responsive Breakpoints: 360px, 768px, 1024px, 1440px
    ========================================================================== */
 @media (max-width: 1024px) {
@@ -1177,6 +1466,7 @@ body {
     .header-utilities {
         width: 100%;
         justify-content: space-between;
+        flex-wrap: wrap;
     }
 }
 
@@ -1204,6 +1494,12 @@ body {
         flex: 1 1 calc(50% - 0.5rem);
         justify-content: center;
     }
+    .colab-url-row {
+        flex-direction: column;
+    }
+    .colab-mode-toggles {
+        flex-direction: column;
+    }
 }
 
 @media (max-width: 360px) {
@@ -1217,3 +1513,4 @@ body {
         padding: 1rem;
     }
 }
+

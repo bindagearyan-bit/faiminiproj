@@ -40,9 +40,13 @@
             </div>
 
             <div class="header-utilities">
+                <button type="button" class="colab-connect-btn" id="btnOpenColabModal" title="Connect to Google Colab Cloud Backend">
+                    <span class="colab-dot" id="colabStatusDot"></span>
+                    <span id="colabStatusText">☁️ Backend: Local Engine</span>
+                </button>
                 <div class="model-status-pill" title="5-Fold Stratified Cross-Validation on training split with zero data leakage">
                     <span class="status-indicator"></span>
-                    <span class="status-label">Model Online &bull; Zero Data Leakage</span>
+                    <span class="status-label">Pipeline Ready &bull; Zero Leakage</span>
                 </div>
                 <div class="eval-toggle-wrap">
                     <label class="toggle-switch" for="autoInferToggle">
@@ -418,6 +422,59 @@
             </div>
         </div>
     </footer>
+
+    <!-- Google Colab Cloud Bridge Modal -->
+    <div class="colab-modal-backdrop" id="colabModal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="colabModalTitle">
+        <div class="colab-modal-card">
+            <header class="modal-card-header">
+                <div class="modal-title-group">
+                    <span class="modal-icon">☁️</span>
+                    <div>
+                        <h3 id="colabModalTitle" class="modal-heading">Connect Google Colab Cloud Backend</h3>
+                        <p class="modal-subheading">Execute predictions &amp; generate charts live inside Google Colab while using this website.</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close-modal" id="btnCloseColabModal" aria-label="Close dialog">&times;</button>
+            </header>
+
+            <div class="modal-card-body">
+                <div class="colab-instructions-box">
+                    <h4 class="instructions-heading">📋 Quick 3-Step Viva Demonstration:</h4>
+                    <ol class="instructions-list">
+                        <li>Open the official notebook in Google Colab:
+                            <div class="colab-badge-link-wrap">
+                                <a href="https://colab.research.google.com/github/bindagearyan-bit/faiminiproj/blob/main/notebooks/CardioPulse_Colab_Live_Backend.ipynb" target="_blank" rel="noopener noreferrer" class="btn-open-colab-link">
+                                    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" class="colab-badge-svg">
+                                </a>
+                            </div>
+                        </li>
+                        <li>Run the cells in Google Colab to start the live tunnel backend.</li>
+                        <li>Copy the generated <code>🌐 Public API URL</code> (e.g. <code>https://...trycloudflare.com</code>) and paste it below:</li>
+                    </ol>
+                </div>
+
+                <div class="colab-input-group">
+                    <label for="colabUrlInput" class="colab-input-label">Google Colab Tunnel URL:</label>
+                    <div class="colab-url-row">
+                        <input type="url" id="colabUrlInput" class="colab-url-field" placeholder="https://xxxx.trycloudflare.com" spellcheck="false" autocomplete="off">
+                        <button type="button" class="btn-connect-colab" id="btnConnectColab">
+                            <span>⚡ Connect to Colab</span>
+                        </button>
+                    </div>
+                    <div class="colab-ping-status" id="colabPingStatus">Status: Using Local Python Engine (http://127.0.0.1:5000)</div>
+                </div>
+
+                <div class="colab-mode-toggles">
+                    <button type="button" class="btn-mode-choice active" id="btnUseLocalServer">
+                        <span>💻 Switch to Local Python Engine</span>
+                    </button>
+                    <a href="https://github.com/bindagearyan-bit/faiminiproj/blob/main/notebooks/CardioPulse_Colab_Live_Backend.ipynb" target="_blank" rel="noopener noreferrer" class="btn-mode-choice link-mode">
+                        <span>📖 View Notebook on GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Interactive Logic Controller -->
     <script src="/static/js/app.js"></script>

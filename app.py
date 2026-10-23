@@ -98,13 +98,25 @@ def get_presets():
     )
 
 
-@app.route("/api/predict", methods=["POST"])
+@app.after_request
+def add_cors_headers(response):
+    """Enables Cross-Origin Resource Sharing (CORS) for Google Colab and remote clients."""
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+
+@app.route("/api/predict", methods=["POST", "OPTIONS"])
 def predict():
     """
     Accepts arbitrary custom patient data and performs live ML inference.
     Dynamically generates exactly 1 visualization from Matplotlib/Seaborn/Scikit-learn
     that best depicts this patient's specific results.
     """
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+
     start_time = time.perf_counter()
     data: Dict[str, Any] = request.get_json(force=True) or {}
 
@@ -125,9 +137,21 @@ def predict():
 
     elapsed_ms = round((time.perf_counter() - start_time) * 1000, 1)
 
+    # Formatted Live Console Log (Visible in Google Colab & Terminal)
+    prob_pct = round(pred_result["prob_disease"] * 100, 1)
+    try:
+        print("\n" + "=" * 65)
+        print(f"[LIVE REQUEST] Patient Vitals: Age={data.get('age')}, BP={data.get('trestbps')}, Chol={data.get('chol')}, MaxHR={data.get('thalach')}")
+        print(f"[MODEL INFERENCE] {pred_result['label']} ({prob_pct}% CAD Risk | Tier: {pred_result['risk_tier']})")
+        print(f"[VISUALIZATION] Chart: {viz_result['id']} | Latency: {elapsed_ms}ms")
+        print("=" * 65)
+    except Exception:
+        pass
+
     return jsonify(
         {
             "status": "success",
+            "server_source": os.environ.get("COLAB_GPU", "Local/Colab Server"),
             "inference_time_ms": elapsed_ms,
             "prediction": pred_result["prediction"],
             "label": pred_result["label"],
@@ -142,9 +166,15 @@ def predict():
     )
 
 
-@app.route("/api/health", methods=["GET"])
+@app.route("/api/health", methods=["GET", "OPTIONS"])
 def health():
-    return jsonify({"status": "healthy", "model_loaded": PIPELINE is not None})
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+    return jsonify({
+        "status": "healthy",
+        "model_loaded": PIPELINE is not None,
+        "environment": "Google Colab Cloud" if "COLAB_GPU" in os.environ or os.environ.get("IS_COLAB") else "Local Python Engine",
+    })
 
 
 if __name__ == "__main__":
