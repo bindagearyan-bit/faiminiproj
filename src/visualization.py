@@ -120,9 +120,9 @@ def generate_biomarker_heatmap(patient_dict: Dict[str, Any]) -> Dict[str, Any]:
     base64_str = fig_to_base64(fig)
     return {
         "id": "biomarker_heatmap",
-        "title": "Patient Health Values vs Healthy Baseline (Seaborn Heatmap)",
+        "title": "Biomarker Risk Matrix (Patient vs Healthy Baseline)",
         "library_used": "Seaborn (sns.heatmap) & Matplotlib",
-        "reason": "This heatmap quickly compares the patient's vitals (Blood Pressure, Cholesterol, Heart Rate) directly against normal medical benchmarks.",
+        "reason": "Compares patient continuous vitals (blood pressure, cholesterol, peak heart rate, ECG stress) against standard clinical reference thresholds.",
         "image_base64": base64_str,
     }
 
@@ -221,9 +221,9 @@ def generate_feature_impact_plot(pipeline, patient_dict: Dict[str, Any]) -> Dict
     base64_str = fig_to_base64(fig)
     return {
         "id": "feature_impact",
-        "title": "Which Patient Features Decided the Result? (Scikit-Learn Bar Chart)",
+        "title": "Model Feature Attribution (Logistic Regression Log-Odds)",
         "library_used": "Scikit-Learn (Model Weights) & Matplotlib",
-        "reason": "This chart shows exactly which inputs caused the ML model to output this decision. Red bars increase risk; green bars protect the patient.",
+        "reason": "Quantifies the directional contribution of each active patient marker towards heart disease risk (positive/red) or protective baseline (negative/green).",
         "image_base64": base64_str,
     }
 
@@ -286,9 +286,9 @@ def generate_age_thalach_kde_plot(patient_dict: Dict[str, Any]) -> Dict[str, Any
     base64_str = fig_to_base64(fig)
     return {
         "id": "age_thalach_kde",
-        "title": "Patient Position vs Dataset Population (Seaborn Scatter Plot)",
+        "title": "Cohort Benchmark Distribution (Age vs Maximum Heart Rate)",
         "library_used": "Seaborn (sns.scatterplot) & Matplotlib",
-        "reason": "This scatter plot shows where this patient sits compared to all 303 real patients in the Cleveland dataset.",
+        "reason": "Maps the patient's age and peak exercise heart rate directly onto the 303 reference patients in the Cleveland clinical dataset.",
         "image_base64": base64_str,
     }
 
@@ -334,9 +334,9 @@ def generate_probability_meter_plot(patient_dict: Dict[str, Any], prob_disease: 
     base64_str = fig_to_base64(fig)
     return {
         "id": "prob_gauge",
-        "title": "Model Decision Threshold & Risk Probability (Matplotlib)",
+        "title": "Decision Boundary & Classification Confidence",
         "library_used": "Matplotlib (Decision Boundary Plot)",
-        "reason": "This graph illustrates the 50% machine learning decision boundary and shows exactly where this patient's probability falls.",
+        "reason": "Demonstrates where the patient's predicted posterior probability falls relative to the standard 0.50 binary classification threshold.",
         "image_base64": base64_str,
     }
 

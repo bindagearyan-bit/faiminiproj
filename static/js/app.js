@@ -1,15 +1,13 @@
 /**
- * CardioAI - Interactive Diagnostic Application Logic
- * Zero-latency Live ML Inference & Tailored Visualization Controller
+ * CardioStratify - Interactive Diagnostic Application Logic
+ * Evidence-based live machine learning inference and visualization controller.
  */
 
 (function () {
     "use strict";
 
-    // Continuous features with synced range sliders & numeric inputs
     const CONTINUOUS_FEATURES = ["age", "trestbps", "chol", "thalach", "oldpeak"];
 
-    // Default baseline values
     const DEFAULT_VALUES = {
         age: 55,
         sex: 1,
@@ -26,7 +24,6 @@
         thal: 3.0,
     };
 
-    // State
     let currentVizOverride = "auto";
     let isAutoInferEnabled = true;
     let debounceTimer = null;
@@ -39,7 +36,7 @@
     const btnRandomize = document.getElementById("btnRandomize");
     const btnResetDefaults = document.getElementById("btnResetDefaults");
 
-    // Result Elements
+    // Output Elements
     const resultCard = document.getElementById("resultCard");
     const statusPill = document.getElementById("statusPill");
     const diagnosisHeadline = document.getElementById("diagnosisHeadline");
@@ -59,9 +56,6 @@
     const vizReasonText = document.getElementById("vizReasonText");
     const switcherPills = document.getElementById("switcherPills");
 
-    /**
-     * Synchronizes slider and number box pairs
-     */
     function setupContinuousSync() {
         CONTINUOUS_FEATURES.forEach((feat) => {
             const slider = document.getElementById(`${feat}_slider`);
@@ -81,15 +75,12 @@
         });
     }
 
-    /**
-     * Configures segmented control buttons (sex, fbs, exang, ca, cp)
-     */
     function setupSegmentedControls() {
-        const controls = document.querySelectorAll(".segmented-control");
+        const controls = document.querySelectorAll(".segmented-selector, .segmented-control");
         controls.forEach((ctrl) => {
             const name = ctrl.getAttribute("data-name");
             const hiddenInput = document.getElementById(name);
-            const buttons = ctrl.querySelectorAll(".segment-btn");
+            const buttons = ctrl.querySelectorAll(".segment-pill, .segment-btn");
 
             buttons.forEach((btn) => {
                 btn.addEventListener("click", () => {
@@ -104,7 +95,6 @@
             });
         });
 
-        // Dropdown changes trigger auto inference too
         ["restecg", "slope", "thal"].forEach((id) => {
             const el = document.getElementById(id);
             if (el) {
@@ -113,9 +103,6 @@
         });
     }
 
-    /**
-     * Reads all current form inputs into a patient dictionary
-     */
     function getFormData() {
         const data = {};
         const formData = new FormData(form);
@@ -124,25 +111,19 @@
             data[key] = parseFloat(value);
         }
 
-        // Add override selection
         data.override_viz = currentVizOverride;
         return data;
     }
 
-    /**
-     * Sets form values from a dictionary and updates all UI controls
-     */
     function setFormData(data) {
         Object.keys(data).forEach((key) => {
             const val = data[key];
 
-            // 1. Sync continuous slider + number box
             const numInput = document.getElementById(key);
             const slider = document.getElementById(`${key}_slider`);
             if (numInput) numInput.value = val;
             if (slider) slider.value = val;
 
-            // 2. Sync selects
             const select = document.querySelector(`select#${key}`);
             if (select) {
                 select.value = String(val);
@@ -151,12 +132,11 @@
                 }
             }
 
-            // 3. Sync segmented buttons
-            const segCtrl = document.querySelector(`.segmented-control[data-name="${key}"]`);
+            const segCtrl = document.querySelector(`.segmented-selector[data-name="${key}"], .segmented-control[data-name="${key}"]`);
             if (segCtrl) {
                 const hiddenInput = document.getElementById(key);
                 if (hiddenInput) hiddenInput.value = val;
-                const buttons = segCtrl.querySelectorAll(".segment-btn");
+                const buttons = segCtrl.querySelectorAll(".segment-pill, .segment-btn");
                 buttons.forEach((b) => {
                     const btnVal = b.getAttribute("data-val");
                     if (String(btnVal) === String(val) || Number(btnVal) === Number(val)) {
@@ -168,31 +148,23 @@
             }
         });
 
-        // Immediately evaluate
         runPrediction();
     }
 
-    /**
-     * Debounced live inference trigger
-     */
     function triggerAutoInference() {
         if (!isAutoInferEnabled) return;
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
             runPrediction();
-        }, 220);
+        }, 180);
     }
 
-    /**
-     * Calls the backend API and renders the output
-     */
     async function runPrediction() {
         if (isSubmitting) return;
         isSubmitting = true;
 
         const payload = getFormData();
 
-        // Show plot loader
         if (plotLoader) plotLoader.style.display = "flex";
         if (vizImage) vizImage.style.display = "none";
 
@@ -204,79 +176,81 @@
             });
 
             if (!response.ok) {
-                throw new Error(`Server returned HTTP ${response.status}`);
+                throw new Error(`HTTP ${response.status}`);
             }
 
             const data = await response.json();
             renderPredictionResults(data);
         } catch (err) {
-            console.error("Prediction error:", err);
-            statusPill.textContent = "Error";
-            diagnosisHeadline.textContent = "Inference Failed";
+            console.error("Prediction execution failed:", err);
+            if (statusPill) statusPill.textContent = "Evaluation Error";
+            if (diagnosisHeadline) diagnosisHeadline.textContent = "Inference Pipeline Error";
         } finally {
             isSubmitting = false;
         }
     }
 
-    /**
-     * Renders prediction output and the single chosen visualization
-     */
     function renderPredictionResults(res) {
         const isCAD = res.prediction === 1;
         const probCAD = res.prob_disease;
         const probHealthy = res.prob_no_disease;
 
-        // Latency
         if (latencyVal) latencyVal.textContent = `${res.inference_time_ms} ms`;
 
-        // Card styling
-        resultCard.classList.remove("state-disease", "state-healthy");
-        resultCard.classList.add(isCAD ? "state-disease" : "state-healthy");
-
-        // Status pill
-        statusPill.className = "status-pill " + (isCAD ? "red" : "green");
-        statusPill.textContent = isCAD ? "CAD Positive (Class 1)" : "Normal / Low Risk (Class 0)";
-
-        // Diagnosis headline
-        diagnosisHeadline.textContent = isCAD
-            ? "Coronary Heart Disease Detected"
-            : "No Heart Disease Detected";
-
-        // Risk tier badge
-        riskTierVal.textContent = res.risk_tier.toUpperCase();
-        riskTierVal.className = "tier-value " + (
-            res.risk_tier.includes("High") ? "red" :
-            res.risk_tier.includes("Moderate") ? "amber" : "green"
-        );
-
-        // Probability texts and bar
-        probDiseaseText.textContent = `CAD Risk: ${probCAD}%`;
-        probHealthyText.textContent = `Normal: ${probHealthy}%`;
-        probBarDisease.style.width = `${probCAD}%`;
-        probBarHealthy.style.width = `${probHealthy}%`;
-
-        // Factors list
-        factorsList.innerHTML = "";
-        if (res.key_factors && res.key_factors.length > 0) {
-            res.key_factors.forEach((factor) => {
-                const li = document.createElement("li");
-                li.textContent = factor;
-                factorsList.appendChild(li);
-            });
-        } else {
-            const li = document.createElement("li");
-            li.textContent = "All primary cardiovascular indicators are within non-critical baseline ranges.";
-            factorsList.appendChild(li);
+        if (resultCard) {
+            resultCard.classList.remove("state-disease", "state-healthy");
+            resultCard.classList.add(isCAD ? "state-disease" : "state-healthy");
         }
 
-        // Render the 1 Selected Visualization
+        if (statusPill) {
+            statusPill.className = "status-tag " + (isCAD ? "red" : "green");
+            statusPill.textContent = isCAD ? "Positive (Class 1)" : "Normal Sinus (Class 0)";
+        }
+
+        if (diagnosisHeadline) {
+            diagnosisHeadline.textContent = isCAD
+                ? "Coronary Artery Disease Detected"
+                : "Absence of Significant Coronary Disease";
+        }
+
+        if (riskTierVal) {
+            riskTierVal.textContent = res.risk_tier.toUpperCase();
+            riskTierVal.className = "box-value " + (
+                res.risk_tier.includes("High") ? "red" :
+                res.risk_tier.includes("Moderate") ? "amber" : "green"
+            );
+        }
+
+        if (probDiseaseText) probDiseaseText.textContent = `CAD Probability: ${probCAD}%`;
+        if (probHealthyText) probHealthyText.textContent = `Normal: ${probHealthy}%`;
+        if (probBarDisease) probBarDisease.style.width = `${probCAD}%`;
+        if (probBarHealthy) probBarHealthy.style.width = `${probHealthy}%`;
+
+        const probTrack = document.querySelector(".prob-track");
+        if (probTrack) probTrack.setAttribute("aria-valuenow", String(probCAD));
+
+        if (factorsList) {
+            factorsList.innerHTML = "";
+            if (res.key_factors && res.key_factors.length > 0) {
+                res.key_factors.forEach((factor) => {
+                    const li = document.createElement("li");
+                    li.textContent = factor;
+                    factorsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement("li");
+                li.textContent = "All primary diagnostic parameters reside within non-critical clinical reference intervals.";
+                factorsList.appendChild(li);
+            }
+        }
+
         const viz = res.visualization;
         if (viz) {
-            vizCardTitle.textContent = viz.title;
-            vizLibraryBadge.textContent = viz.library_used;
-            vizReasonText.textContent = viz.reason;
+            if (vizCardTitle) vizCardTitle.textContent = viz.title;
+            if (vizLibraryBadge) vizLibraryBadge.textContent = viz.library_used;
+            if (vizReasonText) vizReasonText.textContent = viz.reason;
 
-            if (viz.image_base64) {
+            if (viz.image_base64 && vizImage) {
                 vizImage.src = `data:image/png;base64,${viz.image_base64}`;
                 vizImage.onload = () => {
                     if (plotLoader) plotLoader.style.display = "none";
@@ -286,13 +260,9 @@
         }
     }
 
-    /**
-     * Configures faculty preset buttons
-     */
     function setupPresets() {
         const presetData = {
             "2": {
-                // High Risk
                 age: 67,
                 sex: 1,
                 cp: 4,
@@ -308,7 +278,6 @@
                 thal: 7.0,
             },
             "3": {
-                // Healthy Young Adult
                 age: 37,
                 sex: 0,
                 cp: 3,
@@ -324,7 +293,6 @@
                 thal: 3.0,
             },
             "4": {
-                // Moderate Risk
                 age: 54,
                 sex: 1,
                 cp: 2,
@@ -341,7 +309,7 @@
             },
         };
 
-        document.querySelectorAll(".btn-preset[data-preset]").forEach((btn) => {
+        document.querySelectorAll(".btn-case-preset[data-preset]").forEach((btn) => {
             btn.addEventListener("click", () => {
                 const presetKey = btn.getAttribute("data-preset");
                 if (presetData[presetKey]) {
@@ -350,7 +318,6 @@
             });
         });
 
-        // Randomize Arbitrary Patient
         if (btnRandomize) {
             btnRandomize.addEventListener("click", () => {
                 const randomPatient = {
@@ -372,7 +339,6 @@
             });
         }
 
-        // Reset to Defaults
         if (btnResetDefaults) {
             btnResetDefaults.addEventListener("click", () => {
                 setFormData(DEFAULT_VALUES);
@@ -380,32 +346,29 @@
         }
     }
 
-    /**
-     * Faculty demonstration override switcher for the dynamic graph
-     */
     function setupFacultySwitcher() {
         if (!switcherPills) return;
 
-        const pills = switcherPills.querySelectorAll(".pill-btn");
+        const pills = switcherPills.querySelectorAll(".view-pill, .pill-btn");
         pills.forEach((pill) => {
             pill.addEventListener("click", () => {
-                pills.forEach((p) => p.classList.remove("active"));
+                pills.forEach((p) => {
+                    p.classList.remove("active");
+                    p.setAttribute("aria-selected", "false");
+                });
                 pill.classList.add("active");
+                pill.setAttribute("aria-selected", "true");
                 currentVizOverride = pill.getAttribute("data-viz");
                 runPrediction();
             });
         });
     }
 
-    /**
-     * Initialization
-     */
     function init() {
         setupContinuousSync();
         setupSegmentedControls();
         setupPresets();
         setupFacultySwitcher();
-
 
         if (autoInferToggle) {
             autoInferToggle.addEventListener("change", (e) => {
@@ -413,12 +376,13 @@
             });
         }
 
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            runPrediction();
-        });
+        if (form) {
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                runPrediction();
+            });
+        }
 
-        // Run initial inference on page load
         runPrediction();
     }
 
