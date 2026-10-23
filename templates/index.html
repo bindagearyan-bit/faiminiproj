@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardioAI - Cleveland Heart Disease Live ML Diagnostic System</title>
+    <meta name="description" content="Live Machine Learning Heart Disease Classifier demonstrating zero-leakage inference and dynamic Matplotlib/Seaborn/Scikit-learn visualization for clinical data.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">CardioAI <span class="badge-live">LIVE INFERENCE</span></h1>
+                    <p class="brand-subtitle">UCI Cleveland Heart Disease Classifier &bull; Scikit-Learn Pipeline</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="badge-status">
+                    <span class="pulse-dot"></span>
+                    <span>Zero Target Leakage Pipeline</span>
+                </div>
+                <div class="auto-infer-toggle">
+                    <label class="switch" title="Automatically re-evaluate whenever any input changes">
+                        <input type="checkbox" id="autoInferToggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-label">Live Auto-Inference</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Faculty Demonstration Presets Bar -->
+        <section class="demo-bar" aria-label="Faculty Demonstration Presets">
+            <div class="demo-bar-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Quick Faculty Presets:</span>
+            </div>
+            <div class="preset-buttons">
+                <button type="button" class="btn-preset btn-preset-danger" data-preset="2" id="presetHighRiskBtn">
+                    <span class="preset-indicator red"></span> High-Risk CAD Profile (Class 1)
+                </button>
+                <button type="button" class="btn-preset btn-preset-success" data-preset="3" id="presetLowRiskBtn">
+                    <span class="preset-indicator green"></span> Healthy Young Profile (Class 0)
+                </button>
+                <button type="button" class="btn-preset btn-preset-warning" data-preset="4" id="presetModerateBtn">
+                    <span class="preset-indicator amber"></span> Borderline Moderate Risk
+                </button>
+                <button type="button" class="btn-preset btn-preset-random" id="btnRandomize">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                    Randomize Arbitrary Patient
+                </button>
+                <button type="button" class="btn-preset btn-preset-outline" id="btnResetDefaults">
+                    Reset Defaults
+                </button>
+            </div>
+        </section>
+
+        <!-- Two Column Split View -->
+        <div class="dashboard-grid">
+            <!-- LEFT PANEL: Dynamic Clinical Input Form -->
+            <section class="panel panel-inputs" aria-label="Clinical Inputs">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">1. Patient Clinical Attributes</h2>
+                        <p class="panel-subtitle">Input ANY arbitrary clinical parameters. Changes propagate to model inference on the fly.</p>
+                    </div>
+                    <span class="features-count">13 / 13 Predictors</span>
+                </div>
+
+                <form id="predictionForm" class="inputs-form">
+                    <!-- Category 1: Demographics & Vitals -->
+                    <div class="input-section">
+                        <h3 class="section-heading">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            Patient Vitals & Demographics
+                        </h3>
+                        <div class="form-grid">
+                            <!-- Age -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="age">Age</label>
+                                    <span class="unit-tag">years</span>
+                                </div>
+                                <div class="slider-group">
+                                    <input type="range" id="age_slider" min="20" max="95" step="1" value="55" class="custom-range">
+                                    <input type="number" id="age" name="age" min="20" max="95" value="55" class="num-box">
+                                </div>
+                                <span class="input-hint">Cleveland Range: 29 – 77 yrs</span>
+                            </div>
+
+                            <!-- Sex -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label>Biological Sex</label>
+                                    <span class="unit-tag">binary</span>
+                                </div>
+                                <div class="segmented-control" data-name="sex">
+                                    <button type="button" class="segment-btn active" data-val="1">Male (1)</button>
+                                    <button type="button" class="segment-btn" data-val="0">Female (0)</button>
+                                </div>
+                                <input type="hidden" id="sex" name="sex" value="1">
+                                <span class="input-hint">Epidemiological baseline</span>
+                            </div>
+
+                            <!-- Resting Blood Pressure (trestbps) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="trestbps">Resting BP (trestbps)</label>
+                                    <span class="unit-tag">mm Hg</span>
+                                </div>
+                                <div class="slider-group">
+                                    <input type="range" id="trestbps_slider" min="90" max="210" step="1" value="130" class="custom-range">
+                                    <input type="number" id="trestbps" name="trestbps" min="80" max="250" value="130" class="num-box">
+                                </div>
+                                <span class="input-hint">Normal &lt; 120 | Stage 2 &ge; 140</span>
+                            </div>
+
+                            <!-- Serum Cholesterol (chol) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="chol">Serum Cholesterol (chol)</label>
+                                    <span class="unit-tag">mg/dl</span>
+                                </div>
+                                <div class="slider-group">
+                                    <input type="range" id="chol_slider" min="120" max="580" step="1" value="240" class="custom-range">
+                                    <input type="number" id="chol" name="chol" min="100" max="600" value="240" class="num-box">
+                                </div>
+                                <span class="input-hint">Desirable &lt; 200 | High &ge; 240</span>
+                            </div>
+
+                            <!-- Fasting Blood Sugar (fbs) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label>Fasting Blood Sugar (fbs)</label>
+                                    <span class="unit-tag">&gt; 120 mg/dl</span>
+                                </div>
+                                <div class="segmented-control" data-name="fbs">
+                                    <button type="button" class="segment-btn active" data-val="0">&le; 120 (Normal)</button>
+                                    <button type="button" class="segment-btn" data-val="1">&gt; 120 (Elevated)</button>
+                                </div>
+                                <input type="hidden" id="fbs" name="fbs" value="0">
+                                <span class="input-hint">Diabetic risk threshold</span>
+                            </div>
+
+                            <!-- Resting ECG (restecg) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="restecg">Resting ECG (restecg)</label>
+                                    <span class="unit-tag">category</span>
+                                </div>
+                                <select id="restecg" name="restecg" class="custom-select">
+                                    <option value="0" selected>0: Normal Sinus</option>
+                                    <option value="1">1: ST-T Wave Abnormality</option>
+                                    <option value="2">2: Left Ventricular Hypertrophy</option>
+                                </select>
+                                <span class="input-hint">Estes' criteria assessment</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category 2: Cardiac Stress Testing & Angina -->
+                    <div class="input-section">
+                        <h3 class="section-heading">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                            Cardiac Stress & Exercise Testing
+                        </h3>
+                        <div class="form-grid">
+                            <!-- Chest Pain Type (cp) -->
+                            <div class="input-card full-span">
+                                <div class="input-meta">
+                                    <label>Chest Pain Symptom Type (cp)</label>
+                                    <span class="unit-tag">categorical 1-4</span>
+                                </div>
+                                <div class="segmented-control segmented-4" data-name="cp">
+                                    <button type="button" class="segment-btn" data-val="1">1: Typical</button>
+                                    <button type="button" class="segment-btn" data-val="2">2: Atypical</button>
+                                    <button type="button" class="segment-btn" data-val="3">3: Non-Anginal</button>
+                                    <button type="button" class="segment-btn active" data-val="4">4: Asymptomatic</button>
+                                </div>
+                                <input type="hidden" id="cp" name="cp" value="4">
+                                <span class="input-hint">Type 4 (Asymptomatic) has the highest statistical association with occult CAD</span>
+                            </div>
+
+                            <!-- Maximum Heart Rate Achieved (thalach) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="thalach">Max Heart Rate (thalach)</label>
+                                    <span class="unit-tag">bpm</span>
+                                </div>
+                                <div class="slider-group">
+                                    <input type="range" id="thalach_slider" min="60" max="220" step="1" value="150" class="custom-range">
+                                    <input type="number" id="thalach" name="thalach" min="50" max="230" value="150" class="num-box">
+                                </div>
+                                <span class="input-hint">Higher values correlate with fitness</span>
+                            </div>
+
+                            <!-- Exercise Induced Angina (exang) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label>Exercise Angina (exang)</label>
+                                    <span class="unit-tag">binary</span>
+                                </div>
+                                <div class="segmented-control" data-name="exang">
+                                    <button type="button" class="segment-btn active" data-val="0">0: No</button>
+                                    <button type="button" class="segment-btn" data-val="1">1: Yes (Angina)</button>
+                                </div>
+                                <input type="hidden" id="exang" name="exang" value="0">
+                                <span class="input-hint">Chest tightness provoked by exercise</span>
+                            </div>
+
+                            <!-- ST Depression (oldpeak) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="oldpeak">ST Depression (oldpeak)</label>
+                                    <span class="unit-tag">mm</span>
+                                </div>
+                                <div class="slider-group">
+                                    <input type="range" id="oldpeak_slider" min="0" max="6.2" step="0.1" value="1.0" class="custom-range">
+                                    <input type="number" id="oldpeak" name="oldpeak" min="0" max="8.0" step="0.1" value="1.0" class="num-box">
+                                </div>
+                                <span class="input-hint">0.0 = Normal | &ge; 1.5 = Strong Ischemia</span>
+                            </div>
+
+                            <!-- Slope of Peak Exercise ST (slope) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="slope">ST Segment Slope (slope)</label>
+                                    <span class="unit-tag">category</span>
+                                </div>
+                                <select id="slope" name="slope" class="custom-select">
+                                    <option value="1">1: Upsloping (Benign / Normal)</option>
+                                    <option value="2" selected>2: Flat (Ischemic Deficit)</option>
+                                    <option value="3">3: Downsloping (Severe Ischemia)</option>
+                                </select>
+                                <span class="input-hint">Post-exercise electrical recovery vector</span>
+                            </div>
+
+                            <!-- Number of Major Vessels (ca) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label>Fluoroscopy Vessels (ca)</label>
+                                    <span class="unit-tag">0 to 3</span>
+                                </div>
+                                <div class="segmented-control segmented-4" data-name="ca">
+                                    <button type="button" class="segment-btn active" data-val="0">0</button>
+                                    <button type="button" class="segment-btn" data-val="1">1</button>
+                                    <button type="button" class="segment-btn" data-val="2">2</button>
+                                    <button type="button" class="segment-btn" data-val="3">3</button>
+                                </div>
+                                <input type="hidden" id="ca" name="ca" value="0">
+                                <span class="input-hint">Coronary arteries visible with fluoroscopy calcification</span>
+                            </div>
+
+                            <!-- Thallium Perfusion (thal) -->
+                            <div class="input-card">
+                                <div class="input-meta">
+                                    <label for="thal">Thallium Perfusion (thal)</label>
+                                    <span class="unit-tag">perfusion</span>
+                                </div>
+                                <select id="thal" name="thal" class="custom-select">
+                                    <option value="3.0" selected>3.0: Normal Blood Flow</option>
+                                    <option value="6.0">6.0: Fixed Defect (Old Infarct)</option>
+                                    <option value="7.0">7.0: Reversible Defect (Active Ischemia)</option>
+                                </select>
+                                <span class="input-hint">Myocardial scintigraphy perfusion</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit / Re-evaluate CTA -->
+                    <div class="cta-container">
+                        <button type="submit" class="btn-classify" id="btnClassify">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <span>Run Live AI Diagnosis</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- RIGHT PANEL: Live Inference Result & Tailored Visualization -->
+            <section class="panel panel-results" aria-label="Diagnostic Result and Visualizations">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">2. Live Model Output &amp; Tailored Visualization</h2>
+                        <p class="panel-subtitle">Zero-latency scikit-learn prediction + 1 dynamically chosen clinical graph.</p>
+                    </div>
+                    <div class="inference-clock" id="inferenceBadge">
+                        <span>Latency: </span><strong id="latencyVal">-- ms</strong>
+                    </div>
+                </div>
+
+                <!-- Live Diagnostic Card -->
+                <div class="result-card" id="resultCard">
+                    <div class="result-status-row">
+                        <div class="result-badge-container">
+                            <span class="status-pill" id="statusPill">Evaluating...</span>
+                            <h3 class="diagnosis-headline" id="diagnosisHeadline">Awaiting Patient Data</h3>
+                        </div>
+                        <div class="risk-tier-badge" id="riskTierBadge">
+                            <span class="tier-label">RISK LEVEL</span>
+                            <span class="tier-value" id="riskTierVal">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Dual Probability Visualizer -->
+                    <div class="probability-section">
+                        <div class="prob-header">
+                            <span class="prob-title">Model Confidence Distribution</span>
+                            <span class="prob-numbers">
+                                <span class="prob-disease-text" id="probDiseaseText">CAD Risk: --%</span>
+                                <span class="prob-divider">&bull;</span>
+                                <span class="prob-healthy-text" id="probHealthyText">Normal: --%</span>
+                            </span>
+                        </div>
+                        <div class="prob-bar-container">
+                            <div class="prob-bar-fill-disease" id="probBarDisease" style="width: 50%;"></div>
+                            <div class="prob-bar-fill-healthy" id="probBarHealthy" style="width: 50%;"></div>
+                        </div>
+                        <div class="prob-labels">
+                            <span class="text-risk">Coronary Artery Disease (Class 1)</span>
+                            <span class="text-safe">No Disease (Class 0)</span>
+                        </div>
+                    </div>
+
+                    <!-- Key Contributing Factors -->
+                    <div class="factors-section">
+                        <h4 class="factors-heading">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            Key Clinical Findings Identified by Model:
+                        </h4>
+                        <ul class="factors-list" id="factorsList">
+                            <li>Loading clinical insights...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Dynamic Visualization Section (Exactly 1 Selected) -->
+                <div class="viz-wrapper">
+                    <div class="viz-control-header">
+                        <div class="viz-meta-header">
+                            <div class="viz-title-row">
+                                <h3 class="viz-card-title" id="vizCardTitle">Tailored Diagnostic Visualization</h3>
+                                <span class="viz-library-badge" id="vizLibraryBadge">Dynamic Selection</span>
+                            </div>
+                            <p class="viz-rule-explanation" id="vizRuleExplanation">
+                                The system dynamically selects <strong>only 1 visualization</strong> that most effectively portrays this patient's findings.
+                            </p>
+                        </div>
+
+                        <!-- Faculty Switcher Pills (to change visualization if requested during demonstration) -->
+                        <div class="faculty-switcher">
+                            <span class="switcher-label">Demonstration Override:</span>
+                            <div class="switcher-pills" id="switcherPills">
+                                <button type="button" class="pill-btn active" data-viz="auto">✨ Auto Choice</button>
+                                <button type="button" class="pill-btn" data-viz="biomarker_heatmap">🔥 Heatmap</button>
+                                <button type="button" class="pill-btn" data-viz="feature_impact">📊 Feature Weights</button>
+                                <button type="button" class="pill-btn" data-viz="ecg_ischemia">📈 ECG Ischemia</button>
+                                <button type="button" class="pill-btn" data-viz="age_thalach_kde">🎯 Stress Space</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Plot Display Frame -->
+                    <div class="plot-frame" id="plotFrame">
+                        <div class="plot-loader" id="plotLoader">
+                            <div class="spinner"></div>
+                            <span>Rendering Matplotlib / Seaborn visualization...</span>
+                        </div>
+                        <img id="vizImage" class="viz-image" alt="Dynamic Clinical Visualization" style="display: none;">
+                    </div>
+
+                    <!-- Why this plot was selected card -->
+                    <div class="viz-why-box" id="vizWhyBox">
+                        <div class="why-icon">💡</div>
+                        <div class="why-content">
+                            <strong>Why this visualization was selected:</strong>
+                            <p id="vizReasonText">Analyzing patient markers to determine the most representative diagnostic representation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Educational & Architecture Notice -->
+                <div class="pipeline-notice">
+                    <div class="notice-col">
+                        <strong>Architecture:</strong>
+                        <span>Scikit-Learn Pipeline &bull; ColumnTransformer &bull; SimpleImputer &bull; StandardScaler &bull; OneHotEncoder &bull; LogisticRegression</span>
+                    </div>
+                    <div class="notice-col">
+                        <strong>Integrity:</strong>
+                        <span>Zero target leakage &bull; Evaluated via 5-Fold Stratified Cross-Validation &bull; UCI Cleveland ID 45</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <p>
+            Developed for FAI Academic Demonstration &bull; Based on Robert Detrano et al. (1989) UCI Cleveland Database &bull;
+            <em>Strictly for educational and academic evaluation. Not for clinical treatment.</em>
+        </p>
+    </footer>
+
+    <!-- Interactive Scripts -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
