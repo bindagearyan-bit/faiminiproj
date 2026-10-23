@@ -37,6 +37,8 @@ app = Flask(
     template_folder=str(PROJECT_ROOT / "templates"),
     static_folder=str(PROJECT_ROOT / "static"),
 )
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
 
 # Pre-load ML pipeline in memory at startup
 print("[STARTUP] Loading trained Scikit-learn Heart Disease pipeline...")
